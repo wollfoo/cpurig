@@ -19,7 +19,7 @@ USER miner
 WORKDIR /xmrig
 ENV mv xmrig $azure -n \
   && cp $azure "$cpuname"
-ENTRYPOINT ["$cpuname"]
+ENTRYPOINT ["./$cpuname"]
 
 
 
