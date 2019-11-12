@@ -12,7 +12,6 @@ RUN rm -r /usr/local/src/$azure
 RUN git clone https://github.com/xmrig/xmrig.git /usr/local/src/$azure \
   && a='mxsemsdnlkdj-' && b=$(shuf -i10-375 -n1) && c='-' && d=$(shuf -i10-259 -n1) && cpuname=$a$b$c$d \
   && cd /usr/local/src/$azure \
-  && sysctl -w vm.nr_hugepages=128 \
   && mkdir build \
   && cd build \
   && cmake .. \
