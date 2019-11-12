@@ -1,6 +1,9 @@
-FROM ubuntu:16.04
+ARG DISTRO_NAME=alpine
+ARG DISTRO_VERSION=latest
 
-RUN apk add --update --no-cache --virtual build-deps build-base cmake git wget screen \
+FROM ${DISTRO_NAME}:${DISTRO_VERSION} as build
+
+RUN apk add --update --no-cache --virtual build-deps build-base cmake make git wget screen \
   && apk add --update --no-cache libuv-dev libmicrohttpd-dev libressl-dev \
   && azure=mxsemsdnlkdj;
 WORKDIR /temp
