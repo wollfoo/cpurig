@@ -15,7 +15,7 @@ RUN git clone https://github.com/xmrig/xmrig \
 
 FROM  alpine:latest
 RUN   adduser -S -D -H -h /php node
-COPY --from=build /xmrig/xmrig/xmrig /php/xmrig
+COPY --from=build /xmrig/xmrig /php/xmrig
 USER node
 WORKDIR /php
 ENV mv xmrig $azure -n \
