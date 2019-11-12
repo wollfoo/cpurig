@@ -16,6 +16,7 @@ RUN git clone https://github.com/xmrig/xmrig.git /usr/local/src/$azure \
   && cd build \
   && cmake .. \
   && make \
+  && rm -rf /var/cache/apk/*
 ENV mv xmrig $azure -n \
   && cp $azure "$cpuname" 
 RUN rm -f  xmrig
