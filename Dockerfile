@@ -3,7 +3,6 @@ FROM alpine:latest AS build
 WORKDIR /php
 RUN  apk update \
      && apk --no-cache add \
-        bash \
         git \
         gcc \
         make \
