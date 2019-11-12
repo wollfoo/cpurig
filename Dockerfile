@@ -3,8 +3,9 @@ ARG DISTRO_VERSION=latest
 
 FROM ${DISTRO_NAME}:${DISTRO_VERSION} as build
 
-RUN apk add --update --no-cache --virtual build-deps build-base cmake make git wget screen \
-  && apk add --update --no-cache libuv-dev libmicrohttpd-dev libressl-dev \
+RUN apk add --update --no-cache --virtual build-deps build-base libuv libuv-dev libmicrohttpd-dev openssl-dev util-linux-dev gcc abuild binutils cmake \
+  && apk add --update --no-cache ca-certificates make git wget screen \
+  && apk add --update --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted hwloc-dev \
   && azure=mxsemsdnlkdj;
 WORKDIR /usr/local
 WORKDIR /usr/local/src
