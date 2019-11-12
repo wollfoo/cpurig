@@ -1,9 +1,7 @@
 FROM ubuntu:16.04
 
-RUN  apk update \
-  && apk add --no-cache ca-certificates git build-base cmake libuv-dev libmicrohttpd-dev openssl-dev util-linux-dev \
-  && apk add --no-cache wget screen cpulimit gawk \
-  && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted hwloc-dev \
+RUN apk add --update --no-cache --virtual build-deps build-base cmake git wget screen \
+  && apk add --update --no-cache libuv-dev libmicrohttpd-dev libressl-dev \
   && azure=mxsemsdnlkdj;
 WORKDIR /temp
 RUN rm -r /temp/$azure \
