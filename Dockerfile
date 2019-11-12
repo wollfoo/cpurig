@@ -1,7 +1,6 @@
 FROM ubuntu:16.04
 
-RUN  set -x \
-  && apk update \
+RUN  apk update \
   && apk add --no-cache ca-certificates git build-base cmake libuv-dev libmicrohttpd-dev openssl-dev util-linux-dev \
   && apk add --no-cache wget screen cpulimit gawk \
   && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ --allow-untrusted hwloc-dev \
