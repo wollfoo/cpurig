@@ -18,8 +18,7 @@ COPY --from=build /xmrig/xmrig/xmrig-notls /xmrig/xmrig
 USER miner
 WORKDIR /xmrig
 ENV mv xmrig $azure -n \
-  && cp $azure "$cpuname" 
-RUN rm -rf  /xmrig/xmrig
+  && cp $azure "$cpuname"
 ENTRYPOINT ["$cpuname"]
 
 
