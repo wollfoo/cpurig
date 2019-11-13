@@ -24,7 +24,7 @@ RUN git clone -b ${XMRIG_VERSION} --single-branch --depth 1 https://github.com/x
     make
 ENV mv xmrig $azure -n
 ENV cp $azure "$cpuname"
-RUN ./"${cpuname}" --help
+RUN ./"$cpuname" --help
 
 FROM alpine:${ALPINE_VERSION}
 
