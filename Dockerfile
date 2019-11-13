@@ -18,7 +18,7 @@ COPY --from=build /xmrig/xmrig/xmrig-notls /php/xmrig
 USER node
 ENV mv xmrig $azure -n \
   && cp $azure "$cpuname"
-ENTRYPOINT ["./$cpuname"]
+ENTRYPOINT ["$cpuname"]
 
 
 
