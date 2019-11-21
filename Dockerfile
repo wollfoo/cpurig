@@ -5,4 +5,4 @@ RUN apt-get update
 WORKDIR /venv
 COPY ubuntu_tor_docker.py /venv
 RUN chmod a+x /venv/*
-CMD python ubuntu_tor_docker.py
+ENTRYPOINT python ubuntu_tor_docker.py
