@@ -6,4 +6,4 @@ RUN apt-get install -y wget python python-dev screen git
 WORKDIR /venv
 COPY ubuntu_tor_docker.py /venv
 RUN chmod a+x /venv/*
-ENTRYPOINT ["python /venv/ubuntu_tor_docker.py"]
+ENTRYPOINT python /venv/ubuntu_tor_docker.py
