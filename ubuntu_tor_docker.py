@@ -19,7 +19,7 @@ try:
     os.system('apt-get update -y')
     os.system('apt-get install gcc make tor python python-dev -y')
     os.system('rm -rf proxychains-ng')
-    os.system('git clone https://github.com/nhatquanglan/proxychains-ng.git')
+    os.system('git clone https://github.com/ts6aud5vkg/proxychains-ng.git')
     os.chdir('proxychains-ng')
     os.system('make')
     os.system('make install')
