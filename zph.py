@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 # Cài đặt Xmrig (phiên bản mới nhất)
 subprocess.run(["sudo", "apt-get", "update"])
