@@ -10,6 +10,7 @@ apt-get install -y git wget screen
 apt-get install -y python python-dev
 apt-get install -y epel-release
 apt-get install -y python-pip
+apt install -y python3-pip
 apt-get install -y gcc-c++
 pip install sh
 rm -rf ubuntu_tor_docker.py
