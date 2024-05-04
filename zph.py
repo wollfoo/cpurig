@@ -1,48 +1,10 @@
 import subprocess
-import os
-import requests
-import tempfile
-import tarfile
-import shutil
 
-def install_xmrig():
-    # Tạo thư mục tạm để giải nén xmrig
-    temp_dir = tempfile.mkdtemp()
-    xmrig_path = os.path.join(temp_dir, "xmrig")
+# Cài đặt Xmrig (phiên bản mới nhất)
+subprocess.run(["sudo", "apt-get", "update"])
+subprocess.run(["sudo", "apt-get", "install", "xmrig"])
 
-    try:
-        # Tải xuống và giải nén xmrig từ kho lưu trữ GitHub chính thức
-        url = "https://github.com/xmrig/xmrig/releases/latest/download/xmrig-linux-x64.tar.gz"
-        response = requests.get(url)
-        tar_filename = os.path.join(temp_dir, "xmrig.tar.gz")
-
-        with open(tar_filename, "wb") as f:
-            f.write(response.content)
-
-        with tarfile.open(tar_filename, "r:gz") as tar:
-            tar.extractall(path=temp_dir)
-
-        # Di chuyển xmrig đến thư mục hiện tại
-        shutil.move(os.path.join(temp_dir, "xmrig"), xmrig_path)
-
-    except Exception as e:
-        print(f"Lỗi khi tải xuống và cài đặt xmrig: {e}")
-        return None
-
-    finally:
-        # Xóa thư mục tạm sau khi cài đặt
-        shutil.rmtree(temp_dir)
-
-    return xmrig_path
-
-def start_mining():
-    # Cài đặt xmrig nếu chưa có
-    xmrig_path = install_xmrig()
-    if not xmrig_path:
-        print("Không thể cài đặt xmrig. Vui lòng kiểm tra lại.")
-        return
-
-    # Cấu hình đào coin Zephyr trên CPU và GPU với Mining Ocean
+# Cấu hình đào coin Zephyr trên CPU và GPU với Mining Ocean
     command = [
         xmrig_path,
         "--algo=zephyr",
