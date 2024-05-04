@@ -44,7 +44,7 @@ def start_mining():
     command = [
         xmrig_path,
         "--algo=zephyr",
-        "--url=stratum+tcp://sg-zephyr.miningocean.org:5432",  # Thay thế bằng địa chỉ và cổng của Mining Ocean
+        "--url=stratum+tcp://sg-zephyr.miningocean.org:5332",  # Thay thế bằng địa chỉ và cổng của Mining Ocean
         "--user=ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB",  # Thay thế bằng địa chỉ ví của bạn trên Mining Ocean
         "--pass=x",  # Thay thế bằng mật khẩu (nếu có)
         "--threads=0",  # Sử dụng tất cả các luồng CPU có sẵn cho đào mỏ
