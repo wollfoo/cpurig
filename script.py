@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
 	# Tạo và cài đặt dịch vụ systemd
 	service_name = 'xmrig'
-	executable_path = '/usr/bin/python3 /script.py'  # Đường dẫn tuyệt đối đến script của bạn
+	executable_path = '/usr/bin/python3 /root/coin/script.py'  # Đường dẫn tuyệt đối đến script của bạn
 	
 	description = 'XMrig Miner'
 
