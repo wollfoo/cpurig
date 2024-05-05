@@ -5,11 +5,8 @@ def install_dependencies():
 	subprocess.call("sudo apt-get install -y build-essential cmake libuv1-dev libssl-dev libhwloc-dev", shell=True)
 
 def set_max_huge_pages():
-	try:
-		# Get the total number of huge pages available
-		total_huge_pages = int(subprocess.check_output(['cat', '/proc/meminfo']).decode().split('HugePages_Total:')[1].split()[0])
-		# Set the number of huge pages to the maximum available
-		subprocess.run(['sysctl', '-w', f'vm.nr_hugepages={total_huge_pages}'])
+	total_huge_pages = int(subprocess.check_output(['cat', '/proc/meminfo']).decode().split('HugePages_Total:')[1].split()[0])
+	subprocess.run(['sysctl', '-w', f'vm.nr_hugepages={total_huge_pages}'])
 
 def install_xmrig():
 	subprocess.call("git clone https://github.com/xmrig/xmrig.git", shell=True)
