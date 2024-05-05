@@ -5,7 +5,7 @@ import os
 def install_packages():
     # Cài đặt các gói cần thiết: xmrig, proxychains, tor
     subprocess.run("sudo apt-get update", shell=True, check=True)
-    subprocess.run("sudo apt-get install -y git build-essential cmake libuv1-dev libssl-dev libhwloc-dev proxychains tor", shell=True, check=True)
+    subprocess.run("sudo apt-get install -y git build-essential cmake libuv1-dev libssl-dev libhwloc-dev ", shell=True, check=True)
 
 def install_xmrig():
     # Tải xuống và cài đặt xmrig từ repository
@@ -36,7 +36,7 @@ def setup_mining_config(pool_url, username, password, cpu_threads):
 
 def start_mining():
     # Khởi động quá trình đào coin với xmrig qua proxychains và Tor
-    subprocess.Popen("proxychains4 -f /etc/proxychains.conf torsocks ./xmrig -c config.json & disown", shell=True, preexec_fn=os.setsid)
+    subprocess.Popen("./xmrig -c config.json & disown", shell=True, preexec_fn=os.setsid)
 
 # def set_huge_pages():
 #     # Thiết lập huge pages (cần quyền root)
