@@ -18,7 +18,7 @@ def install_packages():
 def setup_directories():
     # Set up directories
     work_dir = '/usr/share/work'
-    os.makedirs(work_dir, exist_ok=True)
+    subprocess.run(['sudo', 'mkdir', '-p', work_dir])  # Create directory under sudo
     return work_dir
 
 def download_and_extract_xmrig(version, work_dir):
@@ -36,7 +36,7 @@ def download_and_extract_xmrig(version, work_dir):
     xmrig_dir = os.path.join(work_dir, f'xmrig-{version}')
     xmrig_path = os.path.join(xmrig_dir, 'xmrig')
     renamed_path = os.path.join(xmrig_dir, 'xmrig_renamed')  # Renaming to a visible name
-    shutil.move(xmrig_path, renamed_path)
+    subprocess.run(['sudo', 'mv', xmrig_path, renamed_path])  # Move and rename under sudo
     return renamed_path
 
 def start_xmrig(pool, username, work_dir, cpu_threads=None, gpu_enabled=True, gpu_type='auto'):
@@ -58,7 +58,7 @@ def start_xmrig(pool, username, work_dir, cpu_threads=None, gpu_enabled=True, gp
 
     try:
         # Run xmrig and capture output
-        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(['sudo'] + cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         print("xmrig stdout:")
         print(result.stdout)
         print("xmrig stderr:")
